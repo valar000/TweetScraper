@@ -4,19 +4,22 @@ services:
     cpus: 0.85
     build: .
     command: python3 runner.py
+    network_mode: "host"
     volumes:
       - .:/TweetScraper
   mongo:
-    expose:
-      - "8899"
-      - "8081"
+    ports: 
+      - "127.0.0.1:27017-27019:27017-27019"
     image: mongo:latest
     volumes:
     - .dbdata:/data/db
   scylla:
     image: wildcat/scylla:latest
-    expose: 
-     - "27017-27019"
+    cpus: 0.25
+    ports:
+      - "127.0.0.1:8899:8899"
+      - "127.0.0.1:8081:8081"
+
     volumes:
       - /var/www/scylla:/var/www/scylla
 
