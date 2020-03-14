@@ -1,9 +1,18 @@
-version: "2.4"
+version: '2.4'
 services:
   tweetscraper:
-    cpus: 0.5
+    cpus: 0.85
     build: .
     command: python3 runner.py
-    network_mode: host
     volumes:
       - .:/TweetScraper
+  mongo:
+    image: mongo:latest
+    volumes:
+    - .dbdata:/data/db
+  scylla:
+    image: wildcat/scylla:latest
+    volumes:
+      - /var/www/scylla:/var/www/scylla
+
+         
