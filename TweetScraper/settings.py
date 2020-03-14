@@ -7,6 +7,7 @@ BOT_NAME = 'TweetScraper'
 LOG_LEVEL = 'INFO'
 DOWNLOAD_HANDLERS = {'s3': None,} # from http://stackoverflow.com/a/31233576/2297751, TODO
 PIPELINE_MONGO_URI = "mongodb://localhost:27017"
+PROXY='http://127.0.0.1:8081'
 SPIDER_MODULES = ['TweetScraper.spiders']
 NEWSPIDER_MODULE = 'TweetScraper.spiders'
 ITEM_PIPELINES = {

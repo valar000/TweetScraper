@@ -52,7 +52,7 @@ class TweetScraper(CrawlSpider):
         self.tweetCollection = db[SETTINGS['MONGODB_TWEET_COLLECTION']]
         for i in emojis:
             url = self.url % (quote(i+' '+self.limit), '')
-            yield http.Request(url, meta={'emoji': i},callback=self.parse_tweet_page)
+            yield http.Request(url, meta={'emoji': i,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
 
     #@inlineCallbacks
     # def query(self,ID):
@@ -74,7 +74,7 @@ class TweetScraper(CrawlSpider):
         min_position = data['min_position']
         min_position = min_position.replace("+","%2B")
         url = self.url % (quote(emoji+' '+self.limit), min_position)
-        yield http.Request(url, meta={'emoji': emoji},callback=self.parse_tweet_page)
+        yield http.Request(url, meta={'emoji': emoji,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
 
     def parse_tweets_block(self, html_page):
         page = Selector(text=html_page)
