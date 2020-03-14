@@ -67,11 +67,11 @@ class TweetScraper(CrawlSpider):
         # handle current page
         data = json.loads(response.body.decode("utf-8"))
         for item in self.parse_tweets_block(data['items_html']):
-            #res = self.tweetCollection.find_one({'ID': item['ID']})
-            #if res is None:
-            url = self.converUrl % item['url']
-            parse_page = partial(self.parse_page,item)
-            yield http.Request(url,callback=parse_page)
+            res = self.tweetCollection.find_one({'ID': item['ID']})
+            if res is None:
+                url = self.converUrl % item['url']
+                parse_page = partial(self.parse_page,item)
+                yield http.Request(url,callback=parse_page)
 
         # get next page
         min_position = data['min_position']

@@ -15,7 +15,12 @@ ITEM_PIPELINES = {
     'TweetScraper.pipelines.SaveToMongoPipeline':100, # replace `SaveToFilePipeline` with this to use MongoDB
     #'TweetScraper.pipelines.SavetoMySQLPipeline':100, # replace `SaveToFilePipeline` with this to use MySQL
 }
+RETRY_HTTP_CODES = [429]
 
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+    'flat.middlewares.TooManyRequestsRetryMiddleware': 543,
+}
 # settings for where to save data on disk
 SAVE_TWEET_PATH = './Data/tweet/'
 SAVE_USER_PATH = './Data/user/'
