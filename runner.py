@@ -7,9 +7,7 @@ from TweetScraper.spiders import TweetCrawler,ConversaCrawler
 from time import sleep
 
 SETTINGS = get_project_settings()
-SETTINGS['CONCURRENT_REQUESTS_PER_DOMAIN']=40
-SETTINGS['DOWNLOAD_DELAY'] = 0.1
-SETTINGS['ITEM_PIPELINES'] = {'TweetScraper.pipelines.SaveToMongoPipeline':100}
+
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 cmdTemplate = ['scrapy','crawl','TweetScraper']

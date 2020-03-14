@@ -2,7 +2,6 @@
 
 # !!! # Crawl responsibly by identifying yourself (and your website/e-mail) on the user-agent
 USER_AGENT = 'valar000@outlook.com'
-
 # settings for spiders
 BOT_NAME = 'TweetScraper'
 LOG_LEVEL = 'INFO'
@@ -19,14 +18,14 @@ RETRY_HTTP_CODES = [429]
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
-    'flat.middlewares.TooManyRequestsRetryMiddleware': 543,
+    'TweetScraper.middlewares.TooManyRequestsRetryMiddleware': 543,
 }
 # settings for where to save data on disk
 SAVE_TWEET_PATH = './Data/tweet/'
 SAVE_USER_PATH = './Data/user/'
 SAVE_CONVERSA_FILE = './Data/conversa'
 CONCURRENT_REQUESTS_PER_DOMAIN = 8
-#DOWNLOAD_DELAY = 0.01
+DOWNLOAD_DELAY = 2.0
 # settings for mongodb
 MONGODB_SERVER = "127.0.0.1"
 MONGODB_PORT = 27017

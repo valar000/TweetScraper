@@ -1,7 +1,7 @@
 version: "2.4"
 services:
   tweetscraper:
-    cpus:0.6
+    cpus: 0.5
     build: .
     command: python3 runner.py
     network_mode: host
