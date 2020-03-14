@@ -16,6 +16,7 @@ ITEM_PIPELINES = {
 }
 RETRY_HTTP_CODES = [429]
 
+RETRY_TIMES=1000000000
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
     'TweetScraper.middlewares.TooManyRequestsRetryMiddleware': 543,
@@ -24,8 +25,10 @@ DOWNLOADER_MIDDLEWARES = {
 SAVE_TWEET_PATH = './Data/tweet/'
 SAVE_USER_PATH = './Data/user/'
 SAVE_CONVERSA_FILE = './Data/conversa'
-CONCURRENT_REQUESTS_PER_DOMAIN = 8
-DOWNLOAD_DELAY = 2.0
+CONCURRENT_REQUESTS_PER_DOMAIN = 40
+AUTOTHROTTLE_START_DELAY=0.5
+DOWNLOAD_DELAY = 0.01
+AUTOTHROTTLE_ENABLED=True
 # settings for mongodb
 MONGODB_SERVER = "127.0.0.1"
 MONGODB_PORT = 27017

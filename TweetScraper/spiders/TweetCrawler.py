@@ -38,25 +38,21 @@ class TweetScraper(CrawlSpider):
     name = 'TweetScraper'
     allowed_domains = ['twitter.com']
 
-    def __init__(self, query='', lang='', crawl_user=False, top_tweet=False):
+    def __init__(self, limit,lang=''):
 
-        
-        self.query = query
+        self.limit=limit
         self.url = "https://twitter.com/i/search/timeline?l={}".format(lang)
         self.converUrl="https://twitter.com%s"
-        if not top_tweet:
-            self.url = self.url + "&f=tweets"
-
         self.url = self.url + "&q=%s&src=unkn&vertical=default&include_available_features=1&include_entities=1&reset_error_state=false&max_position=%s"
 
-        self.crawl_user = crawl_user
 
     def start_requests(self):
         connection  =  pymongo.MongoClient(SETTINGS['PIPELINE_MONGO_URI'])
         db=connection[SETTINGS['PIPELINE_MONGO_DATABASE']]
         self.tweetCollection = db[SETTINGS['MONGODB_TWEET_COLLECTION']]
-        url = self.url % (quote(self.query), '')
-        yield http.Request(url, callback=self.parse_tweet_page)
+        for i in emojis:
+            url = self.url % (quote(i+' '+self.limit), '')
+            yield http.Request(url, meta={'emoji': i},callback=self.parse_tweet_page)
 
     #@inlineCallbacks
     # def query(self,ID):
@@ -65,6 +61,7 @@ class TweetScraper(CrawlSpider):
     def parse_tweet_page(self, response):
         # inspect_response(response, self)
         # handle current page
+        emoji = response.meta['emoji']
         data = json.loads(response.body.decode("utf-8"))
         for item in self.parse_tweets_block(data['items_html']):
             res = self.tweetCollection.find_one({'ID': item['ID']})
@@ -76,8 +73,8 @@ class TweetScraper(CrawlSpider):
         # get next page
         min_position = data['min_position']
         min_position = min_position.replace("+","%2B")
-        url = self.url % (quote(self.query), min_position)
-        yield http.Request(url, callback=self.parse_tweet_page)
+        url = self.url % (quote(emoji+' '+self.limit), min_position)
+        yield http.Request(url, meta={'emoji': emoji},callback=self.parse_tweet_page)
 
     def parse_tweets_block(self, html_page):
         page = Selector(text=html_page)
@@ -307,18 +304,8 @@ class TweetScraper(CrawlSpider):
 
                 tweet['user_id'] = item.xpath('.//@data-user-id').extract()[0]
                 yield tweet
-
-                if self.crawl_user:
-                    ### get user info
-                    user = User()
-                    user['ID'] = tweet['user_id']
-                    user['name'] = item.xpath('.//@data-name').extract()[0]
-                    user['screen_name'] = item.xpath('.//@data-screen-name').extract()[0]
-                    user['avatar'] = \
-                        item.xpath('.//div[@class="content"]/div[@class="stream-item-header"]/a/img/@src').extract()[0]
-                    yield user
             except:
-                logger.error("Error tweet:\n%s" % item.xpath('.').extract()[0])
+                logger.debug("Error tweet:\n%s" % item.xpath('.').extract()[0])
                 # raise
 
     def extract_one(self, selector, xpath, default=None):
