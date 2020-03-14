@@ -7,11 +7,16 @@ services:
     volumes:
       - .:/TweetScraper
   mongo:
+    expose:
+      - "8899"
+      - "8081"
     image: mongo:latest
     volumes:
     - .dbdata:/data/db
   scylla:
     image: wildcat/scylla:latest
+    expose: 
+     - "27017-27019"
     volumes:
       - /var/www/scylla:/var/www/scylla
 
