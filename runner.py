@@ -31,6 +31,7 @@ def run(time):
     process.start()
 
 if  __name__ == "__main__":
+    sleep(60)
     run(0)
     # if len(sys.argv) == 2:
     #     time_index = int(sys.argv[-1])
