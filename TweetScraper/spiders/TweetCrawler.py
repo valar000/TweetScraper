@@ -49,8 +49,8 @@ class TweetScraper(CrawlSpider):
     def start_requests(self):
         for j in range(len(self.limit)-1):
             for i in emojis:
-                url = self.url % (quote(i+' '+'since:%s until:%s'%(self.limit[j],self.limit[j+1])), '')
-                yield http.Request(url, meta={'emoji': i,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
+                tmpurl = self.url % (quote(i+' '+'since:%s until:%s'%(self.limit[j],self.limit[j+1])),'')
+                yield http.Request(tmpurl, meta={'tmpurl':tmpurl,'emoji': i,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
 
 
     def parse_tweet_page(self, response):
@@ -66,8 +66,8 @@ class TweetScraper(CrawlSpider):
         # get next page
         min_position = data['min_position']
         min_position = min_position.replace("+","%2B")
-        url = self.url % (quote(emoji+' '+self.limit), min_position)
-        yield http.Request(url, meta={'emoji': emoji,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
+        url = response.meta['tmpurl']+min_position
+        yield http.Request(url, meta={'tmpurl':response.meta['tmpurl'],'emoji': emoji,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
 
     def parse_tweets_block(self, html_page):
         page = Selector(text=html_page)
