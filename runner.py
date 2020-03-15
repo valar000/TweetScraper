@@ -45,7 +45,7 @@ if  __name__ == "__main__":
     num=1
     try:num=int(sys.argv[-1])
     except:pass
-    sleep(1)
+    sleep(120)
     from multiprocessing import get_context,Pool
     with Pool(2*num) as p:
         p.map(run,timeGen())
