@@ -40,16 +40,17 @@ class TweetScraper(CrawlSpider):
 
     def __init__(self, limit,lang=''):
 
-        self.limit=limit
+        self.limit=limit.split(' ')
         self.url = "https://twitter.com/i/search/timeline?l={}".format(lang)
         self.converUrl="https://twitter.com%s"
         self.url = self.url + "&q=%s&src=unkn&vertical=default&include_available_features=1&include_entities=1&reset_error_state=false&max_position=%s"
 
 
     def start_requests(self):
-        for i in emojis:
-            url = self.url % (quote(i+' '+self.limit), '')
-            yield http.Request(url, meta={'emoji': i,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
+        for j in range(len(self.limit)-1):
+            for i in emojis:
+                url = self.url % (quote(i+' '+'since:%s until:%s'%(self.limit[j],self.limit[j+1])), '')
+                yield http.Request(url, meta={'emoji': i,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
 
 
     def parse_tweet_page(self, response):

@@ -16,15 +16,17 @@ os.chdir(os.path.dirname(os.path.realpath(__file__)))
 #emojis = ['😠', '✋', '😳', '💖', '😎', '😒', '😍', '😣', '😫', '😖', '☺', '♥', '👊', '🔫', '😊', '✌', '💟', '😈', '😕', '💔', '💙', '😘', '💯', '😢', '😭', '😔', '😡', '💕', '😑', '😬', '😜', '😩', '💪', '💁', '🙅', '😪', '😋', '🙈', '😞', '😅', '👏', '👍', '🙊', '🎶', '😐', '😉', '😤', '😂', '👌', '❤', '😏', '😓', '🙏', '👀', '😷', '😁', '💜', '💀', '🙌', '😌', '🎧', '✨', '😴', '😄']
 
 
-def timeGen(step_days=1,start = datetime.datetime(2016, 1, 1),end = datetime.datetime(2017, 1, 1)):
-
-    step = datetime.timedelta(days=step_days)
+def timeGen(step=4,start = datetime.datetime(2016, 1, 1),end = datetime.datetime(2017, 1, 1)):
+    step = datetime.timedelta(days=step)
     i=start
-    tmp=i+step
-    while tmp < end:
-        yield 'since:%s until:%s'%(i.strftime('%Y-%m-%d'),tmp.strftime('%Y-%m-%d'))
+    while i < end:
+        out = []
+        tmp=i
+        while  tmp<=i+step:
+            out.append(tmp.strftime('%Y-%m-%d'))
+            tmp+=datetime.timedelta(days=1)
+        yield ' '.join(out)
         i+=step
-        tmp=i+step
 
 
 
@@ -32,8 +34,6 @@ def timeGen(step_days=1,start = datetime.datetime(2016, 1, 1),end = datetime.dat
 
     
 def run(limit):
-    i=random.random()
-    if i>0.25: sleep(i*80*60)
     from scrapy.cmdline import execute
     execute(["scrapy", "crawl", "TweetScraper",
             "-a", "limit={}".format(limit),
@@ -47,6 +47,6 @@ if  __name__ == "__main__":
     except:pass
     sleep(120)
     from multiprocessing import get_context,Pool
-    with Pool(4*num) as p:
+    with Pool(num) as p:
         p.map(run,timeGen())
     # run(list(timeGen())[0])
