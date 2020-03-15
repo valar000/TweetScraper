@@ -39,12 +39,10 @@ def run(limit):
     return 0
 
 if  __name__ == "__main__":
-    
-    
     num=1
     try:num=int(sys.argv[-1])
     except:pass
-    sleep(1)
+    sleep(120)
     from multiprocessing import get_context,Pool
     with get_context("spawn").Pool(1) as p:
         p.map(run,timeGen())
