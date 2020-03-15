@@ -3,7 +3,7 @@ services:
   tweetscraper:
     cpus: 2.5
     build: .
-    command: python3 runner.py 5
+    command: python3 runner.py 3
     network_mode: "host"
     volumes:
       - .:/TweetScraper

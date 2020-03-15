@@ -33,7 +33,7 @@ def timeGen(step_days=1,start = datetime.datetime(2016, 1, 1),end = datetime.dat
     
 def run(limit):
     i=random.random()
-    if i>0.5: sleep(i*60*60)
+    if i>0.25: sleep(i*80*60)
     from scrapy.cmdline import execute
     execute(["scrapy", "crawl", "TweetScraper",
             "-a", "limit={}".format(limit),
@@ -47,6 +47,6 @@ if  __name__ == "__main__":
     except:pass
     sleep(120)
     from multiprocessing import get_context,Pool
-    with Pool(2*num) as p:
+    with Pool(4*num) as p:
         p.map(run,timeGen())
     # run(list(timeGen())[0])
