@@ -44,6 +44,6 @@ if  __name__ == "__main__":
     except:pass
     sleep(120)
     from multiprocessing import get_context,Pool
-    with get_context("spawn").Pool(1) as p:
+    with get_context("spawn").Pool(num) as p:
         p.map(run,timeGen())
     # run(list(timeGen())[0])
