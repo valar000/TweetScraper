@@ -27,7 +27,7 @@ from txmongo.connection import ConnectionPool
 from txmongo.database import Database
 from txmongo.filter import sort as txsort
 from twisted.internet.defer import inlineCallbacks
-emojis = ['😠', '✋', '😳', '💖', '😎', '😒', '😍', '😣', '😫', '😖', '☺', '♥', '👊', '🔫', '😊', '✌', '💟', '😈', '😕', '💔', '💙', '😘', '💯', '😢', '😭', '😔', '😡', '💕', '😑', '😬', '😜', '😩', '💪', '💁', '🙅', '😪', '😋', '🙈', '😞', '😅', '👏', '👍', '🙊', '🎶', '😐', '😉', '😤', '😂', '👌', '❤', '😏', '😓', '🙏', '👀', '😷', '😁', '💜', '💀', '🙌', '😌', '🎧', '✨', '😴', '😄']
+emojis = ['😠']#, '✋', '😳', '💖', '😎', '😒', '😍', '😣', '😫', '😖', '☺', '♥', '👊', '🔫', '😊', '✌', '💟', '😈', '😕', '💔', '💙', '😘', '💯', '😢', '😭', '😔', '😡', '💕', '😑', '😬', '😜', '😩', '💪', '💁', '🙅', '😪', '😋', '🙈', '😞', '😅', '👏', '👍', '🙊', '🎶', '😐', '😉', '😤', '😂', '👌', '❤', '😏', '😓', '🙏', '👀', '😷', '😁', '💜', '💀', '🙌', '😌', '🎧', '✨', '😴', '😄']
 SETTINGS = get_project_settings()
 
 
@@ -47,25 +47,17 @@ class TweetScraper(CrawlSpider):
 
 
     def start_requests(self):
-        connection  =  pymongo.MongoClient(SETTINGS['PIPELINE_MONGO_URI'])
-        db=connection[SETTINGS['PIPELINE_MONGO_DATABASE']]
-        self.tweetCollection = db[SETTINGS['MONGODB_TWEET_COLLECTION']]
         for i in emojis:
             url = self.url % (quote(i+' '+self.limit), '')
             yield http.Request(url, meta={'emoji': i,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
 
-    #@inlineCallbacks
-    # def query(self,ID):
-    #     res =  self.tweetCollection.find_one({'ID': ID})
-    #     return  res
+
     def parse_tweet_page(self, response):
-        # inspect_response(response, self)
         # handle current page
         emoji = response.meta['emoji']
         data = json.loads(response.body.decode("utf-8"))
         for item in self.parse_tweets_block(data['items_html']):
-            # res = self.tweetCollection.find_one({'ID': item['ID']})
-            # if res is None:
+
             url = self.converUrl % item['url']
             parse_page = partial(self.parse_page,item)
             yield http.Request(url,callback=parse_page)

@@ -4,7 +4,7 @@
 USER_AGENT = 'valar000@outlook.com'
 # settings for spiders
 BOT_NAME = 'TweetScraper'
-LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
 DOWNLOAD_HANDLERS = {'s3': None,} # from http://stackoverflow.com/a/31233576/2297751, TODO
 PIPELINE_MONGO_URI = "mongodb://localhost:27017"
 PROXY='http://127.0.0.1:8081'
@@ -15,7 +15,7 @@ ITEM_PIPELINES = {
     'TweetScraper.pipelines.SaveToMongoPipeline':100, # replace `SaveToFilePipeline` with this to use MongoDB
     #'TweetScraper.pipelines.SavetoMySQLPipeline':100, # replace `SaveToFilePipeline` with this to use MySQL
 }
-RETRY_HTTP_CODES = [429]
+RETRY_HTTP_CODES = [500, 502, 503, 504, 522, 524,400,403, 408, 429]
 
 RETRY_TIMES=10
 DOWNLOADER_MIDDLEWARES = {

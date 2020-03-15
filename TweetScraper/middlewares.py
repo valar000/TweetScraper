@@ -21,6 +21,10 @@ class TooManyRequestsRetryMiddleware(RetryMiddleware):
             # self.crawler.engine.unpause()
             reason = response_status_message(response.status)
             return self._retry(request, reason, spider) or response
+        elif response.status == 500:
+            if 'proxy' in request.meta: request.meta.pop('proxy')
+            reason = response_status_message(response.status)
+            return self._retry(request, reason, spider) or response
         elif response.status in self.retry_http_codes:
             reason = response_status_message(response.status)
             return self._retry(request, reason, spider) or response
