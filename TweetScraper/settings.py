@@ -17,7 +17,7 @@ ITEM_PIPELINES = {
 }
 RETRY_HTTP_CODES = [429]
 
-RETRY_TIMES=1000000000
+RETRY_TIMES=10
 DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
     'TweetScraper.middlewares.TooManyRequestsRetryMiddleware': 543,
