@@ -7,6 +7,7 @@ from TweetScraper.spiders import TweetCrawler
 from time import sleep
 import datetime
 from multiprocessing import Process, freeze_support, set_start_method
+import random
 import signal
 SETTINGS = get_project_settings()
 
@@ -31,6 +32,7 @@ def timeGen(step_days=1,start = datetime.datetime(2016, 1, 1),end = datetime.dat
 
     
 def run(limit):
+    if random.random()>0.5: sleep(60*60)
     from scrapy.cmdline import execute
     execute(["scrapy", "crawl", "TweetScraper",
             "-a", "limit={}".format(limit),
@@ -44,6 +46,6 @@ if  __name__ == "__main__":
     except:pass
     sleep(120)
     from multiprocessing import get_context,Pool
-    with get_context("spawn").Pool(num) as p:
+    with Pool(2*num) as p:
         p.map(run,timeGen())
     # run(list(timeGen())[0])
