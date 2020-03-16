@@ -2,13 +2,14 @@ import os
 import sys
 from scrapy.cmdline import execute
 from scrapy.crawler import CrawlerProcess
-from scrapy.utils.project import get_project_settings
 from TweetScraper.spiders import TweetCrawler
 from time import sleep
 import datetime
 from multiprocessing import Process, freeze_support, set_start_method
 import random
 import signal
+from scrapy.utils.project import get_project_settings
+from scrapy.cmdline import execute
 SETTINGS = get_project_settings()
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -34,19 +35,39 @@ def timeGen(step=4,start = datetime.datetime(2016, 1, 1),end = datetime.datetime
 
     
 def run(limit):
-    from scrapy.cmdline import execute
     execute(["scrapy", "crawl", "TweetScraper",
             "-a", "limit={}".format(limit),
-            "-a", "lang={}".format('en')]) 
-    print("INFO: "+limit)
+            "-a", "lang={}".format('en')])
     return 0
+
+def waitePool(pool,num):
+    while len(pool)>=num:
+        sleep(1)
+        delItem=[]
+        for i in pool:
+            if not i.is_alive():delItem.append(i)
+        if len(delItem)>0:
+            for i in delItem:
+                pool.remove(i)
 
 if  __name__ == "__main__":
     num=1
     try:num=int(sys.argv[-1])
     except:pass
     sleep(120)
-    from multiprocessing import get_context,Pool
-    with Pool(num) as p:
-        p.map(run,timeGen())
+    pool=[]
+    for i in timeGen():
+        t=Process(target=run, args=(i,))
+        waitePool(pool,num)
+        print(i)
+        t.start()
+        pool.append(t)
+        
+        # for i in pool:
+        #     i.join()
+        #     pool.remove(i)
+    # from multiprocessing import get_context,Pool
+    # with Pool(num) as p:
+    #     p.map(run,timeGen())
+
     # run(list(timeGen())[0])
