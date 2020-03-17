@@ -180,12 +180,16 @@ class SaveToMongoPipeline(object):
         item_len=len(item['context'])
         items = item['context']
         for i in range(item_len):
-            if i == item_len-1:
-                res = yield self.collection.insert_one(document=dict(items[item_len-i-1]))
-            else:
-                res = yield self.collection.insert_one(
-                    document=dict({**items[item_len-1-i], 'rep_ID': items[item_len-2-i]['ID']}))
-
+            index=item_len-1-i
+            res =yield self.collection.find_one('ID':items[index]['ID'])
+            if res:
+                if index == 0:
+                    result = yield self.collection.insert_one(document=dict(items[index]))
+                else:
+                    result = yield self.collection.insert_one(
+                        document=dict({**items[index], 'rep_ID': items[index-1]['ID']}))
+            elif i==0: raise DropItem("Duplicate item")
+            else: break
 
         return item
 
