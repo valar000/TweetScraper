@@ -182,7 +182,7 @@ class SaveToMongoPipeline(object):
         for i in range(item_len):
             index=item_len-1-i
             res =yield self.collection.find_one('ID':items[index]['ID'])
-            if res:
+            if res is not None:
                 if index == 0:
                     result = yield self.collection.insert_one(document=dict(items[index]))
                 else:
