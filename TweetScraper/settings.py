@@ -11,9 +11,7 @@ PROXY='http://127.0.0.1:8081'
 SPIDER_MODULES = ['TweetScraper.spiders']
 NEWSPIDER_MODULE = 'TweetScraper.spiders'
 ITEM_PIPELINES = {
-    #'TweetScraper.pipelines.SaveToFilePipeline':100,
     'TweetScraper.pipelines.SaveToMongoPipeline':100, # replace `SaveToFilePipeline` with this to use MongoDB
-    #'TweetScraper.pipelines.SavetoMySQLPipeline':100, # replace `SaveToFilePipeline` with this to use MySQL
 }
 RETRY_HTTP_CODES = [500, 502, 503, 504, 522, 524,400,403, 408, 429]
 
@@ -27,10 +25,7 @@ SAVE_TWEET_PATH = './Data/tweet/'
 SAVE_USER_PATH = './Data/user/'
 SAVE_CONVERSA_FILE = './Data/conversa'
 CONCURRENT_REQUESTS_PER_DOMAIN = 60
-AUTOTHROTTLE_TARGET_CONCURRENCY=7.0
-AUTOTHROTTLE_START_DELAY=0.1
-DOWNLOAD_DELAY = 0.01
-AUTOTHROTTLE_ENABLED=False
+DOWNLOAD_DELAY = 0.001
 # settings for mongodb
 MONGODB_SERVER = "127.0.0.1"
 MONGODB_PORT = 27017

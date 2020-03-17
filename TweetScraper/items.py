@@ -33,7 +33,6 @@ class Tweet(Item):
 class Conversa(Item):
     ID = Field()
     context = Field()
-    tweet_id = Field()
 
 class User(Item):
     ID = Field()            # user id

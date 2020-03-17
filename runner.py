@@ -17,7 +17,7 @@ os.chdir(os.path.dirname(os.path.realpath(__file__)))
 #emojis = ['😠', '✋', '😳', '💖', '😎', '😒', '😍', '😣', '😫', '😖', '☺', '♥', '👊', '🔫', '😊', '✌', '💟', '😈', '😕', '💔', '💙', '😘', '💯', '😢', '😭', '😔', '😡', '💕', '😑', '😬', '😜', '😩', '💪', '💁', '🙅', '😪', '😋', '🙈', '😞', '😅', '👏', '👍', '🙊', '🎶', '😐', '😉', '😤', '😂', '👌', '❤', '😏', '😓', '🙏', '👀', '😷', '😁', '💜', '💀', '🙌', '😌', '🎧', '✨', '😴', '😄']
 
 
-def timeGen(step=4,start = datetime.datetime(2016, 1, 1),end = datetime.datetime(2017, 1, 1)):
+def timeGen(step=4,start = datetime.datetime(2012, 1, 1),end = datetime.datetime(2016, 1, 1)):
     step = datetime.timedelta(days=step)
     i=start
     while i < end:
@@ -56,18 +56,12 @@ if  __name__ == "__main__":
     except:pass
     sleep(120)
     pool=[]
-    for i in timeGen():
+    for i in timeGen(step=30):
         t=Process(target=run, args=(i,))
         waitePool(pool,num)
         print(i)
         t.start()
         pool.append(t)
         
-        # for i in pool:
-        #     i.join()
-        #     pool.remove(i)
-    # from multiprocessing import get_context,Pool
-    # with Pool(num) as p:
-    #     p.map(run,timeGen())
 
-    # run(list(timeGen())[0])
+    run(list(timeGen(5))[0])

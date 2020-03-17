@@ -1,9 +1,9 @@
 version: '2.4'
 services:
   tweetscraper:
-    cpus: 2.5
+    cpus: 4.5
     build: .
-    command: python3 runner.py 3
+    command: python3 runner.py 5
     network_mode: "host"
     volumes:
       - .:/TweetScraper
@@ -15,7 +15,7 @@ services:
     - ./dbdata:/data/db
   scylla:
     image: wildcat/scylla:latest
-    cpus: 0.5
+    cpus: 1.0
     ports:
       - "127.0.0.1:8899:8899"
       - "127.0.0.1:8081:8081"
