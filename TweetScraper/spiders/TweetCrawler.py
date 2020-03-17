@@ -80,7 +80,8 @@ class TweetScraper(CrawlSpider):
     def parse_tweet_page(self, response):
         # handle current page
         emoji = response.meta['emoji']
-        data = json.loads(response.body.decode("utf-8"))
+        try:data = json.loads(response.body.decode("utf-8"))
+        except:yield http.Request(response.url,headers=[("User-Agent", random.choice(user_agent_list))], meta={'tmpurl':response.meta['tmpurl'],'emoji': emoji,"proxy": SETTINGS['PROXY']},callback=self.parse_tweet_page)
         for item in self.parse_tweets_block(data['items_html']):
 
             url = self.converUrl % item['url']

@@ -12,13 +12,7 @@ class TooManyRequestsRetryMiddleware(RetryMiddleware):
     @classmethod
     def from_crawler(cls, crawler):
         return cls(crawler)
-
     def process_response(self, request, response, spider):
-        if 'proxy' in request.meta:
-            try: json.loads(response.body.decode("utf-8"))
-            except: 
-                reason = response_status_message(response.status)
-                return self._retry(request, reason, spider) or response
         if request.meta.get('dont_retry', False):
             return response
         elif response.status == 429:
