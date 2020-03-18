@@ -188,8 +188,12 @@ class SaveToMongoPipeline(object):
                 else:
                     result = yield self.collection.insert_one(
                         document=dict({**items[index], 'rep_ID': items[index-1]['ID']}))
-            elif i==0: raise DropItem("Duplicate item")
-            else: break
+            #update rep_ID for res
+            elif 'rep_ID' not in res and index!=0:
+                result = yield self.collection.replace_one({'ID':res['ID']},dict({**items[index], 'rep_ID': items[index-1]['ID']}))
+            else: 
+                if i==0: raise DropItem("drop Duplicate ID:%s"%res['ID'])
+                else: break
 
         return item
 
