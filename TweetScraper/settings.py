@@ -6,7 +6,7 @@ USER_AGENT = 'valar000@outlook.com'
 BOT_NAME = 'TweetScraper'
 LOG_LEVEL = 'INFO'
 DOWNLOAD_HANDLERS = {'s3': None,} # from http://stackoverflow.com/a/31233576/2297751, TODO
-PIPELINE_MONGO_URI = "mongodb://localhost:27017"
+
 PROXY='http://127.0.0.1:8081'
 SPIDER_MODULES = ['TweetScraper.spiders']
 NEWSPIDER_MODULE = 'TweetScraper.spiders'
@@ -27,17 +27,8 @@ SAVE_CONVERSA_FILE = './Data/conversa'
 CONCURRENT_REQUESTS_PER_DOMAIN = 60
 DOWNLOAD_DELAY = 0.001
 # settings for mongodb
-MONGODB_SERVER = "127.0.0.1"
-MONGODB_PORT = 27017
-MONGODB_DB = "TweetScraper"        # database name to save the crawled data
+PIPELINE_MONGO_URI = "mongodb://localhost:27017"
 PIPELINE_MONGO_DATABASE ="TweetScrape"
 PIPELINE_MONGO_COLLECTION=MONGODB_TWEET_COLLECTION = "tweet" # collection name to save tweets
-MONGODB_USER_COLLECTION = "user"   # collection name to save users
-MONGODB_CONVERSA_COLLECTION = "conversation"
-#settings for mysql
-MYSQL_SERVER = "127.0.0.1"
-MYSQL_DB     = "TweetScraper"
-MYSQL_TABLE  = "scraper" # the table will be created automatically
-MYSQL_USER   = ""        # MySQL user to use (should have INSERT access granted to the Database/Table
-MYSQL_PWD    = ""        # MySQL user's password
+MONGO_INDEXES='ID'
 TELNETCONSOLE_ENABLED = False

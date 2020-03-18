@@ -51,6 +51,12 @@ def waitePool(pool,num):
                 pool.remove(i)
 
 if  __name__ == "__main__":
+    import pymongo
+    connection = pymongo.MongoClient(SETTINGS['PIPELINE_MONGO_URI '])
+    db = connection[SETTINGS['PIPELINE_MONGO_DATABASE']]
+    collect=db[SETTINGS['PIPELINE_MONGO_COLLECTION']]
+    collect.create_index(SETTINGS['MONGO_INDEXES'])
+    connection.close()
     num=1
     try:num=int(sys.argv[-1])
     except:pass
