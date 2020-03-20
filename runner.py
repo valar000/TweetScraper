@@ -66,8 +66,8 @@ def waitePool(pool,num):
     while len(pool)>=num:
         end=time.perf_counter()
         sleep(1)
-        #update proxy 10 min
-        if end-start > 60*30:
+        #update proxy 1hour
+        if end-start > 60*60*1:
             start=end
             update_proxy()
         delItem=[]
@@ -78,7 +78,7 @@ def waitePool(pool,num):
                 pool.remove(i)
 
 if  __name__ == "__main__":
-    subprocess.call(["squid","-N","-d1"], shell=False)
+    subprocess.Popen(["man","-N","-d1"])
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
     import pymongo
     try:
@@ -95,7 +95,7 @@ if  __name__ == "__main__":
     except:pass
 
     update_proxy()
-    sleep(60)
+    sleep(2)
     pool=[]
     for i in timeGen(step=30):
         t=Process(target=run, args=(i,))
