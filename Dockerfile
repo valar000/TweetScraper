@@ -7,13 +7,20 @@ RUN apk upgrade --no-cache \
   libxml2-dev \
   libxml2 \
   libxslt-dev \
+  squid \
+  build-base \
+  libressl-dev \
+  libffi-dev \
+  python-dev \
   libxslt \
   libffi-dev \
   python3-dev \
   py3-lxml \
   && rm -rf /var/cache/* \
   && rm -rf /root/.cache/*
-
-COPY . /TweetScraper
+RUN sed -i 's/http_access deny all/http_access allow all/g' /etc/squid/squid.conf
+RUN cp /etc/squid/squid.conf /etc/squid/squid.conf.backup
+RUN mkdir  /TweetScraper
 WORKDIR  /TweetScraper
+COPY ./requirements.txt /TweetScraper/
 RUN pip3 install -U pip && pip3 install -r requirements.txt
