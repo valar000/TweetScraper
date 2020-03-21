@@ -36,7 +36,7 @@ SQUID_BIN_PATH = '/usr/sbin/squid'  # mac os '/usr/local/sbin/squid'
 SQUID_CONF_PATH = '/etc/squid/squid.conf'  # mac os '/usr/local/etc/squid.conf'
 SQUID_TEMPLATE_PATH = '/etc/squid/squid.conf.backup'  # mac os /usr/local/etc/squid.conf.backup
 default_conf_detail = "cache_peer {} parent {} 0 no-query weighted-round-robin weight=1 " \
-                        "connect-fail-limit=2 allow-miss max-conn=5 name=proxy-{}"
+                        "connect-fail-limit=1 allow-miss max-conn=5 name=proxy-{}"
 other_confs = ['request_header_access Via deny all', 'request_header_access X-Forwarded-For deny all',
                 'request_header_access From deny all', 'never_direct allow all']
 def update_proxy():
