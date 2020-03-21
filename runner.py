@@ -41,18 +41,21 @@ other_confs = ['request_header_access Via deny all', 'request_header_access X-Fo
                 'request_header_access From deny all', 'never_direct allow all']
 def update_proxy():
     import  requests
-    url='http://localhost:8899/api/v1/proxies/?limit=500&anonymous=true&https=true&countries=US'
-    r=requests.get(url)
-    with open(SQUID_TEMPLATE_PATH, 'r') as fr, open(SQUID_CONF_PATH, 'w') as fw:
-        original_conf = fr.read()
-        fw.write(original_conf)
-        for index,i in enumerate(r.json()['proxies']):
-            ip = str(i['ip'])
-            port=str(i['port'])
-            print(default_conf_detail.format(ip, port, index),file=fw)
-        for i in other_confs:
-            print(i,file=fw)
-    subprocess.call([SQUID_BIN_PATH, '-k', 'reconfigure'], shell=False)
+    try:
+        url='http://localhost:8899/api/v1/proxies/?limit=500&anonymous=true&https=true&countries=US'
+        r=requests.get(url)
+        with open(SQUID_TEMPLATE_PATH, 'rt') as fr, open(SQUID_CONF_PATH, 'wt') as fw:
+            original_conf = fr.read()
+            fw.write(original_conf)
+            for index,i in enumerate(r.json()['proxies']):
+                ip = str(i['ip'])
+                port=str(i['port'])
+                print(default_conf_detail.format(ip, port, index),file=fw)
+            for i in other_confs:
+                print(i,file=fw)
+    except Exception as e: print(e)
+    finally:
+        subprocess.Popen([SQUID_BIN_PATH, '-k', 'reconfigure'])
 
     
 def run(limit):
@@ -67,7 +70,7 @@ def waitePool(pool,num):
         end=time.perf_counter()
         sleep(1)
         #update proxy 1hour
-        if end-start > 60*60*1:
+        if end-start > 60*60*3:
             start=end
             update_proxy()
         delItem=[]
