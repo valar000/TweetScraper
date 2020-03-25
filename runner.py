@@ -13,6 +13,7 @@ from scrapy.cmdline import execute
 import json
 import time
 import subprocess
+import shutil
 SETTINGS = get_project_settings()
 
 
@@ -20,7 +21,7 @@ SETTINGS = get_project_settings()
 #emojis = ['😠', '✋', '😳', '💖', '😎', '😒', '😍', '😣', '😫', '😖', '☺', '♥', '👊', '🔫', '😊', '✌', '💟', '😈', '😕', '💔', '💙', '😘', '💯', '😢', '😭', '😔', '😡', '💕', '😑', '😬', '😜', '😩', '💪', '💁', '🙅', '😪', '😋', '🙈', '😞', '😅', '👏', '👍', '🙊', '🎶', '😐', '😉', '😤', '😂', '👌', '❤', '😏', '😓', '🙏', '👀', '😷', '😁', '💜', '💀', '🙌', '😌', '🎧', '✨', '😴', '😄']
 
 
-def timeGen(step=4,start = datetime.datetime(2013, 9, 1),end = datetime.datetime(2016, 1, 1)):
+def timeGen(step=4,start = datetime.datetime(2014, 1, 1),end = datetime.datetime(2016, 1, 1)):
     step = datetime.timedelta(days=step)
     i=start
     while i < end:
@@ -36,7 +37,7 @@ SQUID_BIN_PATH = '/usr/sbin/squid'  # mac os '/usr/local/sbin/squid'
 SQUID_CONF_PATH = '/etc/squid/squid.conf'  # mac os '/usr/local/etc/squid.conf'
 SQUID_TEMPLATE_PATH = '/etc/squid/squid.conf.backup'  # mac os /usr/local/etc/squid.conf.backup
 default_conf_detail = "cache_peer {} parent {} 0 no-query weighted-round-robin weight=1 " \
-                        "connect-fail-limit=1 allow-miss max-conn=5 name=proxy-{}"
+                        "connect-fail-limit=1  max-conn=2 name=proxy-{}"
 other_confs = ['request_header_access Via deny all', 'request_header_access X-Forwarded-For deny all',
                 'request_header_access From deny all', 'never_direct allow all']
 def update_proxy():
@@ -70,18 +71,24 @@ def waitePool(pool,num):
         end=time.perf_counter()
         sleep(1)
         #update proxy 1hour
-        if end-start > 60*60*3:
+        if end-start > 60*60*1:
             start=end
             update_proxy()
         delItem=[]
         for i in pool:
-            if not i.is_alive():delItem.append(i)
+            p,t=i[0],i[1]
+            if not p.is_alive() :
+                if time.perf_counter()-t <60*10:
+                    for ii in pool:if ii[0].is_alive():ii[0].terminate()
+                    shutil.copy(SQUID_CONF_PATH,'backConf')
+                    exit(0)
+                delItem.append(i)
         if len(delItem)>0:
             for i in delItem:
                 pool.remove(i)
 
 if  __name__ == "__main__":
-    subprocess.Popen(["man","-N","-d1"])
+    subprocess.Popen(["squid","-s","-N","-d1"])
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
     import pymongo
     try:
@@ -105,7 +112,7 @@ if  __name__ == "__main__":
         waitePool(pool,num)
         print(i)
         t.start()
-        pool.append(t)
+        pool.append([t,time.perf_counter()])
         
 
     # run(list(timeGen(5))[0])
