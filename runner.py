@@ -39,12 +39,13 @@ SQUID_TEMPLATE_PATH = '/etc/squid/squid.conf.backup'  # mac os /usr/local/etc/sq
 default_conf_detail = "cache_peer {} parent {} 0 no-query weighted-round-robin weight=1 " \
                         "connect-fail-limit=1  max-conn=2 name=proxy-{}"
 other_confs = ['request_header_access Via deny all', 'request_header_access X-Forwarded-For deny all',
-                'request_header_access From deny all', 'never_direct allow all']
+                'request_header_access From deny all', 'never_direct allow all','http_access deny all']
 def update_proxy():
     import  requests
     try:
         url='http://localhost:8899/api/v1/proxies/?limit=500&anonymous=true&https=true&countries=US'
         r=requests.get(url)
+        if len(r.json()['proxies'])<=10: return ;
         with open(SQUID_TEMPLATE_PATH, 'rt') as fr, open(SQUID_CONF_PATH, 'wt') as fw:
             original_conf = fr.read()
             fw.write(original_conf)
@@ -54,9 +55,9 @@ def update_proxy():
                 print(default_conf_detail.format(ip, port, index),file=fw)
             for i in other_confs:
                 print(i,file=fw)
-    except Exception as e: print(e)
-    finally:
         subprocess.Popen([SQUID_BIN_PATH, '-k', 'reconfigure'])
+    except Exception as e: print(e)
+
 
     
 def run(limit):
@@ -79,9 +80,11 @@ def waitePool(pool,num):
             p,t=i[0],i[1]
             if not p.is_alive() :
                 if time.perf_counter()-t <60*10:
-                    for ii in pool:if ii[0].is_alive():ii[0].terminate()
+                    for ii in pool:
+                        if ii[0].is_alive():
+                            ii[0].terminate()
                     shutil.copy(SQUID_CONF_PATH,'backConf')
-                    exit(0)
+                    sys.exit(0)
                 delItem.append(i)
         if len(delItem)>0:
             for i in delItem:
