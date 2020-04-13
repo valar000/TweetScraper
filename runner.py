@@ -20,7 +20,7 @@ SETTINGS = get_project_settings()
 #emojis = ['😠', '✋', '😳', '💖', '😎', '😒', '😍', '😣', '😫', '😖', '☺', '♥', '👊', '🔫', '😊', '✌', '💟', '😈', '😕', '💔', '💙', '😘', '💯', '😢', '😭', '😔', '😡', '💕', '😑', '😬', '😜', '😩', '💪', '💁', '🙅', '😪', '😋', '🙈', '😞', '😅', '👏', '👍', '🙊', '🎶', '😐', '😉', '😤', '😂', '👌', '❤', '😏', '😓', '🙏', '👀', '😷', '😁', '💜', '💀', '🙌', '😌', '🎧', '✨', '😴', '😄']
 
 
-def timeGen(step=4,start = datetime.datetime(2013, 9, 1),end = datetime.datetime(2016, 1, 1)):
+def timeGen(step=4,start = datetime.datetime(2014, 1, 1),end = datetime.datetime(2016, 1, 1)):
     step = datetime.timedelta(days=step)
     i=start
     while i < end:
@@ -81,7 +81,7 @@ def waitePool(pool,num):
                 pool.remove(i)
 
 if  __name__ == "__main__":
-    subprocess.Popen(["man","-N","-d1"])
+    subprocess.Popen(["squid","-N","-d1"])
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
     import pymongo
     try:
